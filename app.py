@@ -5,7 +5,7 @@ from sqlalchemy import ForeignKey, DateTime
 from sqlalchemy.sql import func
 
 app = Flask(__name__)
-# sudo /opt/lampp/manager-linux-x64.run
+# sudo /opt/lampp/manager-linux-x64.run to open LAMPP
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:@localhost/lemo_miniblog"
 
