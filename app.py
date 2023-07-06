@@ -38,7 +38,7 @@ class Post(db.Model):
     __tablename__ = "post"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(70), nullable=False)
-    content = db.Column(db.String(200), nullable=True)
+    content = db.Column(db.String(500), nullable=True)
     time_created = db.Column(DateTime(timezone=True), server_default=func.now())
     time_updated = db.Column(DateTime(timezone=True), onupdate=func.now())
     user_id = db.Column(db.Integer, ForeignKey("user.id"), nullable=False)
@@ -48,22 +48,17 @@ class Post(db.Model):
         return f"-Category: f{self.name}"
 
 class Comment(db.Model):
-    __tablename__ = "localidad"
+    __tablename__ = "comment"
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String(130), nullable=False)
+    content = db.Column(db.String(200), nullable=False)
     time_created = db.Column(DateTime(timezone=True), server_default=func.now())
     time_updated = db.Column(DateTime(timezone=True), onupdate=func.now())
     user_id = db.Column(db.Integer, ForeignKey("user.id"), nullable=False)
 
     def __str__(self):
-        return self.name
-
-
-@app.context_processor
-def inject_paises():
-    pass
+        return f"-Comment '{self.content}' by {self.user_id}"
 
 
 @app.route("/")
 def Index():
-    return render_template("index.html")
+    return render_template('index.html')
