@@ -4,18 +4,41 @@
 
 {%block main%} 
 
+<div class="container mx-auto text-center mt-3">
+  <h3>Agrega una publicación...</h3>
+  <form action="/add_post" method="post" class="mb-3 d-flex justify-content-end flex-wrap">
+    <label for="title"></label>
+      <input class="form-control w-100" type="text" name="title" id="" placeholder="¡¡Título!!">
+    <label for="content"></label>
+      <input class="form-control w-100" type="text" name="content" id="" placeholder="¿¡Qué estás pensando!?">
+    <label for="category" class="form-label"></label>
+    <select id="" name="category" placeholder="Elige categoría">
+      <option value="1">cine</option>
+      <!-- debe dar category ID -->
+      <option value="2">videojuegos</option>
+    </select>
+      <button type="submit" class="btn btn-primary">Agregar Posteo</button>
+  </form>
+</div>
 
-<br>
  <!--empieza Post Main  -->
+{%for post in posts%}
 <div class=" my-1 mx-5 row border">
   <div class="col-12 col-sm-3 text-center">
     <p class="m-0">Luca P dice:</p>
     <img class="container rounded-circle  w-auto" style="height: 100px;" src="../static/img/luca_ico.jpg" alt="foto de perfil">
   </div>
   <div class="col-12 col-sm-9">
-    <h4 class="">Título</h4>
+    <div class="d-flex flex-wrap">
+      
+      <h4 class="flex-grow-1">{{post.title}}</h4>
+      <a href="#">{{post.category_id}}</a>
+      <p>| {{post.time_created}}</p>
+      <!-- SI EDITADO, MOSTRAR TIMESTAMP -->
+
+    </div>
     <hr class="m-0">
-    <p class="">Contenido Lorem ipsum dolor, sit amet consectetur adipisicing elit. Fugit quas quis fuga recusandae eveniet blanditiis consequuntur reiciendis eos, ex corrupti facere sit ratione, necessitatibus nihil vel, voluptate maiores facilis inventore?</p>
+    <p class="">{{post.content}} </p>
    <!-- BTN para el user -->
   <div class="d-flex justify-content-end mb-1">
     <div class="btn-group" role="group" aria-label="Basic example">
@@ -79,38 +102,29 @@
   </div>
 </div>
 <br>
-<!--  
-<div class=" my-1 mx-5 row border">
-  <div class="col-3 text-center">
-    <p class="m-0">Luca P dice:</p>
-    <img class="container rounded-circle  w-auto" style="height: 100px;" src="../static/img/luca_ico.jpg" alt="foto de perfil">
-  </div>
-  <div class="col-9">
-    <h4 class="">Título</h4>
-    <hr class="m-0">
-    <p class="">Contenido Lorem ipsum dolor, sit amet consectetur adipisicing elit. Fugit quas quis fuga recusandae eveniet blanditiis consequuntur reiciendis eos, ex corrupti facere sit ratione, necessitatibus nihil vel, voluptate maiores facilis inventore?</p>
-    <div class="accordion accordion-flush" id="accordionFlushExample">
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="flush-headingTwo">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-            Ver Comentarios
-          </button>
-        </h2>
-        <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
-          <div class="accordion-body row">
-            <div class="col-2 text-center">
-              <p class="m-0">Luca P dice:</p>
-              <img class="container rounded-circle  w-auto" style="height: 50px;" src="../static/img/luca_ico.jpg" alt="foto de perfil">
-            </div>
-            <p class="col-10">Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente aut fuga, nemo rerum qui culpa reprehenderit quasi nam nisi maxime laborum esse voluptates officia cupiditate earum ut quod ea iure.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
--->
+{%endfor%}
 
+<!-- CARTELITO
+  <div class="modal fade" id="modal_confirmacion" tabindex="-1" role="dialog"
+                            aria-labelledby="modal_confirmacionTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered text-dark" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="modal_confirmacionTitle">Thanks for trusting us!</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        a tuxchange operator will get in touch with you
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary"
+                                            data-dismiss="modal">Sure!</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
 
 
 {%endblock%}
