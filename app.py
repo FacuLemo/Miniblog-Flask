@@ -7,7 +7,8 @@ from sqlalchemy.sql import func
 app = Flask(__name__)
 # sudo /opt/lampp/manager-linux-x64.run to open LAMPP
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:@localhost/lemo_miniblog"
+URI_LOCAL="mysql+pymysql://root:@localhost/lemo_miniblog"
+app.config["SQLALCHEMY_DATABASE_URI"] = URI_LOCAL
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -62,7 +63,9 @@ class Comment(db.Model):
         return f"-Comment '{self.content}' by {self.user_id}"
 
 #TODO: CONTEXT PROCESSOR PASA EL ID DEL USER SELECCIONADO
-#CADA FUNCION TOMA EL ID COMO PARAMETRO PARA SABER Q USER SUBIO EL POST/COMENTARIO
+#CADA FUNCION TOMA EL ID COMO PARAMETRO PARA SABER
+#  Q USER SUBIO EL POST/COMENTARIO
+
 @app.context_processor
 def inject_paises():
     posts=db.session.query(Post).all()
@@ -79,7 +82,7 @@ def AddPost():
         content = request.form['content']
         category = request.form['category']
         #obtener el user
-        user=1
+        user=1 #TODO
         new_post=Post(title=title,content=content,category_id=category,
                       user_id=user)
         db.session.add(new_post)
@@ -91,8 +94,8 @@ def AddPost():
 def AddComment():
     if request.method=='POST':
         content = request.form['content']
-        new_comment=Comment(content=nombre_pais)
-        db.session.add(nuevo_pais)
+        new_comment=Comment(content=content)
+        db.session.add(new_comment)
         db.session.commit()
 
         return redirect(url_for('Index'))
