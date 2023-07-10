@@ -31,7 +31,7 @@ class User(db.Model):
     password = db.Column(db.String(100), nullable=False)
     active = db.Column(db.Boolean, default=True, nullable=False)
     posts= db.relationship('Post', backref='user')
-    comments= db.relationship('Comment', backref='category')
+    comments= db.relationship('Comment', backref='user')
 
     def __str__(self):
         return f"-User data: {self.nombre}, {self.email}."
@@ -48,6 +48,7 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, ForeignKey("user.id"), nullable=False)
     category_id = db.Column(db.Integer, ForeignKey("category.id"),
                              nullable=True)
+    comments= db.relationship('Comment', backref='post')
 
     def __str__(self):
         return f"-Category: f{self.name}"
@@ -60,6 +61,7 @@ class Comment(db.Model):
                               server_default=func.now())
     time_updated = db.Column(DateTime(timezone=True), onupdate=func.now())
     user_id = db.Column(db.Integer, ForeignKey("user.id"), nullable=False)
+    post_id = db.Column(db.Integer, ForeignKey("post.id"), nullable=False)
 
     def __str__(self):
         return f"-Comment '{self.content}' by {self.user_id}"
@@ -73,6 +75,7 @@ def inject_paises():
 def Index():
     return render_template('index.html',
                            categories=db.session.query(Category).all(),
+                           comments=db.session.query(Comment).all(),
                            )
 
 @app.route("/add_post", methods=['POST'])
@@ -90,13 +93,30 @@ def AddPost():
 
         return redirect(url_for('Index'))
 
-@app.route("/add_comment", methods=['POST'])
-def AddComment():
+@app.route("/add_comment/<post_id>", methods=['POST'])
+def AddComment(post_id):
     if request.method=='POST':
         content = request.form['content']
-        new_comment=Comment(content=content)
+        post = post_id
+        #obtener el user
+        user=1 #TODO
+        new_comment=Comment(content=content, user_id=user, post_id=post)
         db.session.add(new_comment)
         db.session.commit()
 
         return redirect(url_for('Index'))
+
+@app.route("/delete_post/<id>")
+def deletePost(id):
+    post=Post.query.get(id)
+    db.session.delete(post)
+    db.session.commit()
+    return redirect(url_for('Index'))
+
+@app.route("/delete_comment/<id>")
+def deleteComment(id):
+    comm=Comment.query.get(id)
+    db.session.delete(comm)
+    db.session.commit()
+    return redirect(url_for('Index'))
 
