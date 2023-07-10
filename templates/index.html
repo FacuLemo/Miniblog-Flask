@@ -13,9 +13,9 @@
       <input class="form-control w-100" type="text" name="content" id="" placeholder="¿¡Qué estás pensando!?">
     <label for="category" class="form-label"></label>
     <select id="" name="category" placeholder="Elige categoría">
-      <option value="1">cine</option>
-      <!-- debe dar category ID -->
-      <option value="2">videojuegos</option>
+      {%for category in categories%}
+      <option value="{{category.id}}">{{category.name}}</option>
+      {%endfor%}
     </select>
       <button type="submit" class="btn btn-primary">Agregar Posteo</button>
   </form>
@@ -25,14 +25,14 @@
 {%for post in posts%}
 <div class=" my-1 mx-5 row border">
   <div class="col-12 col-sm-3 text-center">
-    <p class="m-0">Luca P dice:</p>
+    <p class="m-0">{{post.user.name}} dice:</p>
     <img class="container rounded-circle  w-auto" style="height: 100px;" src="../static/img/luca_ico.jpg" alt="foto de perfil">
   </div>
   <div class="col-12 col-sm-9">
     <div class="d-flex flex-wrap">
       
       <h4 class="flex-grow-1">{{post.title}}</h4>
-      <a href="#">{{post.category_id}}</a>
+      <a href="#">{{post.category.name}}</a>
       <p>| {{post.time_created}}</p>
       <!-- SI EDITADO, MOSTRAR TIMESTAMP -->
 

@@ -17,8 +17,8 @@ migrate = Migrate(app, db)
 class Category(db.Model):
     __tablename__ = "category"  # --> si no esta, adopta el nombre de la clase
     id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(100), nullable=False)
-
+    name = db.Column(db.String(100), nullable=False)
+    posts= db.relationship('Post', backref='category')
     def __str__(self):
         return f"category: {self.name}"
 
@@ -30,6 +30,8 @@ class User(db.Model):
     email = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
     active = db.Column(db.Boolean, default=True, nullable=False)
+    posts= db.relationship('Post', backref='user')
+    comments= db.relationship('Comment', backref='category')
 
     def __str__(self):
         return f"-User data: {self.nombre}, {self.email}."
@@ -62,18 +64,16 @@ class Comment(db.Model):
     def __str__(self):
         return f"-Comment '{self.content}' by {self.user_id}"
 
-#TODO: CONTEXT PROCESSOR PASA EL ID DEL USER SELECCIONADO
-#CADA FUNCION TOMA EL ID COMO PARAMETRO PARA SABER
-#  Q USER SUBIO EL POST/COMENTARIO
-
 @app.context_processor
 def inject_paises():
-    posts=db.session.query(Post).all()
+    posts=db.session.query(Post).order_by(Post.id.desc()).all()
     return dict(posts=posts)
 
 @app.route("/")
 def Index():
-    return render_template('index.html')
+    return render_template('index.html',
+                           categories=db.session.query(Category).all(),
+                           )
 
 @app.route("/add_post", methods=['POST'])
 def AddPost():
