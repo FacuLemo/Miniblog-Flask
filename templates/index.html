@@ -6,7 +6,7 @@
 
 <div class="container mx-auto text-center mt-3">
   <h3>Agrega una publicación...</h3>
-  <p>Estás logeado como '{{logged_user.name}}' </p>
+  <div class="text-start"><small>logeado como '{{logged_user.name}}'</small></div>
   <form action="/add_post/{{logged_user.id}}" method="post" class="mb-3 d-flex justify-content-end flex-wrap">
     <label for="title"></label>
     <input class="form-control w-100" type="text" name="title" id="" placeholder="¡¡Título!!">
@@ -34,8 +34,8 @@
     <div class="d-flex flex-wrap">
 
       <h4 class="flex-grow-1">{{post.title}}</h4>
-      <a href="#">{{post.category.name}}</a>
-      <p>| {{post.time_created}}</p>
+      <a href="/categories/{{post.category.id}}/{logged_user.id}">{{post.category.name}}</a>
+      <p> | {{post.time_created}}</p>
       <!-- SI EDITADO, MOSTRAR TIMESTAMP -->
 
     </div>
@@ -85,8 +85,8 @@
                 alt="foto de perfil">
             </div>
             <div class="col-12 col-sm-10">
-            <small class="border-bottom">{{comment.time_created}}</small>
-            <p class="col-12 col-sm-10">{{comment.content}}</p>
+              <small class="border-bottom">{{comment.time_created}}</small>
+              <p class="col-12 col-sm-10">{{comment.content}}</p>
             </div>
             <!-- editar admin -->
             <div class="d-flex justify-content-end mb-1">

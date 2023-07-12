@@ -65,6 +65,7 @@ class Comment(db.Model):
     def __str__(self):
         return f"-Comment '{self.content}' by {self.user_id}"
 
+#tengo que borrar esto, soy un pelotudo, no hace falta
 def GetLoggedUserId(uid):
     logged_user=User.query.get(uid)
     logged_id=logged_user.id
@@ -77,28 +78,31 @@ def inject_paises():
     posts=db.session.query(Post).order_by(Post.id.desc()).all()
     users=db.session.query(User).all()
     categ=db.session.query(Category).all()
-    return dict(posts=posts, users=users, categories=categ)
+    return dict(posts=posts, users=users, categories=categ )
 
 @app.route("/")
 def RedirectGuest():
-    return redirect(url_for('Index',user_id='guest'))
+    return redirect(url_for('Index', user_id='guest'))
 
 @app.route("/<user_id>")
 def Index(user_id):
     if user_id=='guest':
-        return render_template('guest.html')
+        return render_template('guest.html',
+                               comments=db.session.query(Comment).all())
     else:
         logged_user=User.query.get(user_id)
-        return render_template('index.html',
-                           comments=db.session.query(Comment).all(),
-                           logged_user=logged_user
-                           )
+        return render_template('index.html',logged_user=logged_user,
+                               comments=db.session.query(Comment).all())
 
 @app.route("/categories")
 def ViewCategories():
-    return render_template('categories.html',
-                            categories=db.session.query(Category).all(),
-                            )
+    return render_template('categories.html')
+
+#TODO: CATEGORIES FILTER--
+@app.route("/categories/<id>/<u_id>")
+def FilteredPosts(id,uid):
+    logged_id=GetLoggedUserId(uid)
+    return redirect(url_for('Index',user_id=logged_id))
 
 @app.route("/users")
 def ViewUsers():
