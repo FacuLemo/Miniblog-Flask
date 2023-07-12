@@ -29,7 +29,6 @@ class User(db.Model):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
-    active = db.Column(db.Boolean, default=True, nullable=False)
     posts= db.relationship('Post', backref='user')
     comments= db.relationship('Comment', backref='user')
 
@@ -48,7 +47,7 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, ForeignKey("user.id"), nullable=False)
     category_id = db.Column(db.Integer, ForeignKey("category.id"),
                              nullable=True)
-    comments= db.relationship('Comment', backref='post')
+    comments= db.relationship('Comment', backref='post', cascade="all,delete" )
 
     def __str__(self):
         return f"-Category: f{self.name}"
@@ -66,57 +65,84 @@ class Comment(db.Model):
     def __str__(self):
         return f"-Comment '{self.content}' by {self.user_id}"
 
+def GetLoggedUserId(uid):
+    logged_user=User.query.get(uid)
+    logged_id=logged_user.id
+    return logged_id
+
+#TODO: Pasar usuarios en el context processor y no los posts! cambiar en layout
+
 @app.context_processor
 def inject_paises():
     posts=db.session.query(Post).order_by(Post.id.desc()).all()
-    return dict(posts=posts)
+    users=db.session.query(User).all()
+    categ=db.session.query(Category).all()
+    return dict(posts=posts, users=users, categories=categ)
 
 @app.route("/")
-def Index():
-    return render_template('index.html',
-                           categories=db.session.query(Category).all(),
+def RedirectGuest():
+    return redirect(url_for('Index',user_id='guest'))
+
+@app.route("/<user_id>")
+def Index(user_id):
+    if user_id=='guest':
+        return render_template('guest.html')
+    else:
+        logged_user=User.query.get(user_id)
+        return render_template('index.html',
                            comments=db.session.query(Comment).all(),
+                           logged_user=logged_user
                            )
 
-@app.route("/add_post", methods=['POST'])
-def AddPost():
+@app.route("/categories")
+def ViewCategories():
+    return render_template('categories.html',
+                            categories=db.session.query(Category).all(),
+                            )
+
+@app.route("/users")
+def ViewUsers():
+    return render_template('users.html',)
+
+@app.route("/add_post/<uid>", methods=['POST'])
+def AddPost(uid):
     if request.method=='POST':
         title = request.form['title']
         content = request.form['content']
         category = request.form['category']
-        #obtener el user
-        user=1 #TODO
+        logged_id=GetLoggedUserId(uid)
         new_post=Post(title=title,content=content,category_id=category,
-                      user_id=user)
+                      user_id=logged_id)
         db.session.add(new_post)
         db.session.commit()
 
-        return redirect(url_for('Index'))
+        return redirect(url_for('Index',user_id=logged_id))
 
-@app.route("/add_comment/<post_id>", methods=['POST'])
-def AddComment(post_id):
+@app.route("/add_comment/<post_id>/<uid>", methods=['POST'])
+def AddComment(post_id,uid):
     if request.method=='POST':
         content = request.form['content']
         post = post_id
-        #obtener el user
-        user=1 #TODO
-        new_comment=Comment(content=content, user_id=user, post_id=post)
+        logged_id=GetLoggedUserId(uid)
+        new_comment=Comment(content=content, user_id=logged_id, post_id=post)
         db.session.add(new_comment)
         db.session.commit()
 
-        return redirect(url_for('Index'))
+        return redirect(url_for('Index',user_id=logged_id))
 
-@app.route("/delete_post/<id>")
-def deletePost(id):
+@app.route("/delete_post/<id>/<uid>")
+def deletePost(id,uid):
     post=Post.query.get(id)
     db.session.delete(post)
     db.session.commit()
-    return redirect(url_for('Index'))
+    logged_id=GetLoggedUserId(uid)
+    return redirect(url_for('Index',user_id=logged_id))
 
-@app.route("/delete_comment/<id>")
-def deleteComment(id):
+@app.route("/delete_comment/<id>/<uid>")
+def deleteComment(id,uid):
     comm=Comment.query.get(id)
     db.session.delete(comm)
     db.session.commit()
-    return redirect(url_for('Index'))
+    logged_id=GetLoggedUserId(uid)
+    return redirect(url_for('Index',user_id=logged_id))
 

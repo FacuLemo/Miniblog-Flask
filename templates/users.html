@@ -1,0 +1,13 @@
+{%extends 'layout.html'%}
+
+{%block title%} Categorías - MiniBlog {%endblock%}
+
+{%block main%}
+
+{%for user in users%}
+<h1><a href="">{{user.name}}</a></h1>
+{%endfor%}
+
+<div> crear usuario</div>
+
+{%endblock%}
