@@ -29,8 +29,9 @@ class User(db.Model):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
-    posts= db.relationship('Post', backref='user')
-    comments= db.relationship('Comment', backref='user')
+    image= db.Column(db.Integer,nullable=False, default=1)
+    posts= db.relationship('Post', backref='user', cascade="all,delete")
+    comments= db.relationship('Comment', backref='user', cascade="all,delete")
 
     def __str__(self):
         return f"-User data: {self.nombre}, {self.email}."
@@ -71,7 +72,6 @@ def GetLoggedUserId(uid):
     logged_id=logged_user.id
     return logged_id
 
-#TODO: Pasar usuarios en el context processor y no los posts! cambiar en layout
 
 @app.context_processor
 def inject_paises():
@@ -106,7 +106,19 @@ def FilteredPosts(id,uid):
 
 @app.route("/users")
 def ViewUsers():
-    return render_template('users.html',)
+    return render_template('users.html')
+
+@app.route("/add_user",methods=['POST'])
+def AddUser():
+    if request.method=='POST':
+        name = request.form['name']
+        email = request.form['email']
+        passw = request.form['password']
+        img = request.form['image']
+        new_user=User(name=name,email=email,password=passw, image=img)
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect(url_for('ViewUsers'))
 
 @app.route("/add_post/<uid>", methods=['POST'])
 def AddPost(uid):
@@ -150,3 +162,9 @@ def deleteComment(id,uid):
     logged_id=GetLoggedUserId(uid)
     return redirect(url_for('Index',user_id=logged_id))
 
+@app.route("/delete_user/<id>")
+def deleteUser(id):
+    usr=User.query.get(id)
+    db.session.delete(usr)
+    db.session.commit()
+    return redirect(url_for('ViewUsers'))

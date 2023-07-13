@@ -27,17 +27,17 @@
 <div class=" my-1 mx-5 row border">
   <div class="col-12 col-sm-3 text-center">
     <p class="m-0">{{post.user.name}} dice:</p>
-    <img class="container rounded-circle  w-auto" style="height: 100px;" src="../static/img/luca_ico.jpg"
+    <img class="container rounded-circle  w-auto" style="height: 100px;" src="../static/img/{{post.user.image}}.jpg"
       alt="foto de perfil">
   </div>
   <div class="col-12 col-sm-9">
     <div class="d-flex flex-wrap">
 
       <h4 class="flex-grow-1">{{post.title}}</h4>
-      <a href="/categories/{{post.category.id}}/{logged_user.id}">{{post.category.name}}</a>
+      <a href="/categories/{{post.category.id}}/{{logged_user.id}}">{{post.category.name}}</a>
       <p> | {{post.time_created}}</p>
       <!-- SI EDITADO, MOSTRAR TIMESTAMP -->
-
+ 
     </div>
     <hr class="my-1">
     <p class=" text-break">{{post.content}} </p>
@@ -81,7 +81,7 @@
 
             <div class="col-12 col-sm-2 text-center border-end">
               <p class="m-0">{{comment.user.name}} dice:</p>
-              <img class="rounded-circle mx-3 w-auto" style="height: 50px;" src="../static/img/luca_ico.jpg"
+              <img class="rounded-circle mx-3 w-auto" style="height: 50px;" src="../static/img/{{comment.user.image}}.jpg"
                 alt="foto de perfil">
             </div>
             <div class="col-12 col-sm-10">

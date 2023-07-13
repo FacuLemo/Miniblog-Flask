@@ -4,10 +4,63 @@
 
 {%block main%}
 
-{%for user in users%}
-<h1><a href="">{{user.name}}</a></h1>
-{%endfor%}
+<br>
+<!-- Acordeón Crear Usuario -->
+<div class="cointainer text-center">
+    <button class="btn btn-success mb-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+        aria-expanded="false" aria-controls="collapseExample">
+        Crear usuario
+    </button>
 
-<div> crear usuario</div>
+    <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+            <form action="/add_user" method="post" class="mb-3 d-flex justify-content-end flex-wrap">
+                <label for="name"></label>
+                <input class="form-control w-100" type="text" name="name" id="" placeholder="Nombre de usuario">
+                <label for="email">Email</label>
+                <input class="form-control w-100" type="email" name="email" id="" placeholder="correo@correo.com">
+                <label for="password">Contraseña</label>
+                <input class="form-control w-100" type="password" name="password" id="" placeholder="contraseña">
+                <label for="image" class="form-label"></label>
+                <select id="" name="image" placeholder="Elige imagen de perfil">
+                    <option value="1">Sin imagen</option>
+                    <option value="2">Gato</option>
+                    <option value="3">Perro</option>
+                    <option value="4">Michael Jackson</option>
+                    <option value="5">Portal Cake</option>
+                    <option value="6">Luca</option>
+                  </select>
+                <button type="submit" class="btn btn-primary">Crear usuario</button>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- Termina acordeón Creación user -->
+<br>
+<!-- empieza crud Usuarios -->
+<div class="table-responsive container text-center">
+    <table class="table table-primary">
+        <thead>
+            <tr>
+                <th scope="col">Usuario </th>
+                <th scope="col">Posteos</th>
+                <th scope="col">Comentarios</th>
+                <th scope="col">Borrar? </th>
+            </tr>
+        </thead>
+        <tbody>
+            {%for user in users%}
+            <tr class="">
+                <td scope="row">{{user.name}}</td>
+                <td scope="row"><a name="" id="" class="btn btn-primary" href="#" role="button">Ver Posts</a></td>
+                <td scope="row"><a name="" id="" class="btn btn-primary" href="#" role="button">Ver comments</a></td>
+                <td scope="row"><a name="" id="" class="btn btn-danger" href="/delete_user/{{user.id}}" role="button">Borrar</a></td>
+            </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+</div>
 
 {%endblock%}
