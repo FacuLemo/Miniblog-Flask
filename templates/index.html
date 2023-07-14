@@ -6,7 +6,8 @@
 
 <div class="container mx-auto text-center mt-3">
   <h3>Agrega una publicación...</h3>
-  <form action="/add_post" method="post" class="mb-3 d-flex justify-content-end flex-wrap">
+  <div class="text-start"><small><img src="../static/img/{{logged_user.image}}.jpg" alt="foto de perfil" class="rounded-circle" style="height: 50px; width: 50px;"> '{{logged_user.name}}'</small></div>
+  <form action="/add_post/{{logged_user.id}}" method="post" class="mb-3 d-flex justify-content-end flex-wrap">
     <label for="title"></label>
     <input class="form-control w-100" type="text" name="title" id="" placeholder="¡¡Título!!">
     <label for="content"></label>
@@ -22,24 +23,25 @@
 </div>
 
 <!--empieza Post Main  -->
+{%if posts|count > 0%}
 {%for post in posts%}
 <div class=" my-1 mx-5 row border">
   <div class="col-12 col-sm-3 text-center">
     <p class="m-0">{{post.user.name}} dice:</p>
-    <img class="container rounded-circle  w-auto" style="height: 100px;" src="../static/img/luca_ico.jpg"
+    <img class="container rounded-circle  w-auto" style="height: 100px;" src="../static/img/{{post.user.image}}.jpg"
       alt="foto de perfil">
   </div>
   <div class="col-12 col-sm-9">
     <div class="d-flex flex-wrap">
 
       <h4 class="flex-grow-1">{{post.title}}</h4>
-      <a href="#">{{post.category.name}}</a>
-      <p>| {{post.time_created}}</p>
+      <a href="/categories/{{post.category.id}}/{{logged_user.id}}">{{post.category.name}}</a>
+      <p> | {{post.time_created}}</p>
       <!-- SI EDITADO, MOSTRAR TIMESTAMP -->
 
     </div>
     <hr class="my-1">
-    <p class="">{{post.content}} </p>
+    <p class=" text-break">{{post.content}} </p>
     <!-- BTN para el user -->
     <div class="d-flex justify-content-end mb-1">
       <div class="btn-group" role="group" aria-label="Basic example">
@@ -50,7 +52,7 @@
               d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
           </svg>
         </a>
-        <a href="/delete_post/{{post.id}}" class="btn btn-outline-danger">
+        <a href="/delete_post/{{post.id}}/{{logged_user.id}}" class="btn btn-outline-danger">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash"
             viewBox="0 0 16 16">
             <path
@@ -80,12 +82,12 @@
 
             <div class="col-12 col-sm-2 text-center border-end">
               <p class="m-0">{{comment.user.name}} dice:</p>
-              <img class="rounded-circle mx-3 w-auto" style="height: 50px;" src="../static/img/luca_ico.jpg"
-                alt="foto de perfil">
+              <img class="rounded-circle mx-3 w-auto" style="height: 50px;"
+                src="../static/img/{{comment.user.image}}.jpg" alt="foto de perfil">
             </div>
             <div class="col-12 col-sm-10">
-            <small class="border-bottom">{{comment.time_created}}</small>
-            <p class="col-12 col-sm-10">{{comment.content}}</p>
+              <small class="border-bottom">{{comment.time_created}}</small>
+              <p class="col-12 col-sm-10">{{comment.content}}</p>
             </div>
             <!-- editar admin -->
             <div class="d-flex justify-content-end mb-1">
@@ -97,7 +99,7 @@
                       d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
                   </svg>
                 </button>
-                <a href="/delete_comment/{{comment.id}}" class="btn btn-outline-danger">
+                <a href="/delete_comment/{{comment.id}}/{{logged_user.id}}" class="btn btn-outline-danger">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash"
                     viewBox="0 0 16 16">
                     <path
@@ -112,7 +114,8 @@
             {% endif %}
 
             {%endfor%}
-            <form action="/add_comment/{{post.id}}" method="post" class="my-2 d-flex ">
+            <form action="/add_comment/{{post.id}}/{{logged_user.id}}" method="post" class="my-2 d-flex ">
+              <img src="../static/img/{{logged_user.image}}.jpg" alt="foto de perfil" class="rounded-circle" style="height: 50px; width: 50px;">
               <label for="content"></label>
               <input class="form-control" type="text" name="content" id="" placeholder="¡¿Qué opinas?!">
               <button class="btn btn-primary" type="sumbit"> Comentar</button>
@@ -128,7 +131,11 @@
 </div>
 <br>
 {%endfor%}
-
+{%else%}
+<div class="container my-3 text-center border-top">
+  <h1>Parece que aún no hay posteos...</h1>
+</div>
+{%endif%}
 <!-- CARTELITO
   <div class="modal fade" id="modal_confirmacion" tabindex="-1" role="dialog"
                             aria-labelledby="modal_confirmacionTitle" aria-hidden="true">

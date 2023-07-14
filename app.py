@@ -7,7 +7,7 @@ from sqlalchemy.sql import func
 app = Flask(__name__)
 # sudo /opt/lampp/manager-linux-x64.run to open LAMPP
 
-URI_LOCAL="mysql+pymysql://root:@localhost/lemo_miniblog"
+URI_LOCAL = "mysql+pymysql://root:@localhost/lemo_miniblog"
 app.config["SQLALCHEMY_DATABASE_URI"] = URI_LOCAL
 
 db = SQLAlchemy(app)
@@ -18,7 +18,8 @@ class Category(db.Model):
     __tablename__ = "category"  # --> si no esta, adopta el nombre de la clase
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    posts= db.relationship('Post', backref='category')
+    posts = db.relationship("Post", backref="category")
+
     def __str__(self):
         return f"category: {self.name}"
 
@@ -29,9 +30,9 @@ class User(db.Model):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
-    active = db.Column(db.Boolean, default=True, nullable=False)
-    posts= db.relationship('Post', backref='user')
-    comments= db.relationship('Comment', backref='user')
+    image = db.Column(db.Integer, nullable=False, default=1)
+    posts = db.relationship("Post", backref="user", cascade="all,delete")
+    comments = db.relationship("Comment", backref="user", cascade="all,delete")
 
     def __str__(self):
         return f"-User data: {self.nombre}, {self.email}."
@@ -42,23 +43,21 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(70), nullable=False)
     content = db.Column(db.String(500), nullable=True)
-    time_created = db.Column(DateTime(timezone=True),
-                              server_default=func.now())
+    time_created = db.Column(DateTime(timezone=True), server_default=func.now())
     time_updated = db.Column(DateTime(timezone=True), onupdate=func.now())
     user_id = db.Column(db.Integer, ForeignKey("user.id"), nullable=False)
-    category_id = db.Column(db.Integer, ForeignKey("category.id"),
-                             nullable=True)
-    comments= db.relationship('Comment', backref='post')
+    category_id = db.Column(db.Integer, ForeignKey("category.id"), nullable=True)
+    comments = db.relationship("Comment", backref="post", cascade="all,delete")
 
     def __str__(self):
         return f"-Category: f{self.name}"
+
 
 class Comment(db.Model):
     __tablename__ = "comment"
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(200), nullable=False)
-    time_created = db.Column(DateTime(timezone=True),
-                              server_default=func.now())
+    time_created = db.Column(DateTime(timezone=True), server_default=func.now())
     time_updated = db.Column(DateTime(timezone=True), onupdate=func.now())
     user_id = db.Column(db.Integer, ForeignKey("user.id"), nullable=False)
     post_id = db.Column(db.Integer, ForeignKey("post.id"), nullable=False)
@@ -66,57 +65,142 @@ class Comment(db.Model):
     def __str__(self):
         return f"-Comment '{self.content}' by {self.user_id}"
 
+
+# tengo que borrar esto, soy un pelotudo, no hace falta
+def GetLoggedUserId(uid):
+    logged_user = User.query.get(uid)
+    logged_id = logged_user.id
+    return logged_id
+
+
+
 @app.context_processor
 def inject_paises():
-    posts=db.session.query(Post).order_by(Post.id.desc()).all()
-    return dict(posts=posts)
+    posts = db.session.query(Post).order_by(Post.id.desc()).all()
+    users = db.session.query(User).all()
+    categ = db.session.query(Category).all()
+    category1 = db.session.query(Category).first()
+    if category1 == None:
+        category_default = Category(name='Misceláneo')
+        db.session.add(category_default)
+        db.session.commit()
+    return dict(posts=posts, users=users, categories=categ)
+
 
 @app.route("/")
-def Index():
-    return render_template('index.html',
-                           categories=db.session.query(Category).all(),
-                           comments=db.session.query(Comment).all(),
-                           )
+def RedirectGuest():
+    return redirect(url_for("Index", user_id="guest"))
 
-@app.route("/add_post", methods=['POST'])
-def AddPost():
-    if request.method=='POST':
-        title = request.form['title']
-        content = request.form['content']
-        category = request.form['category']
-        #obtener el user
-        user=1 #TODO
-        new_post=Post(title=title,content=content,category_id=category,
-                      user_id=user)
+
+@app.route("/<user_id>")
+def Index(user_id):
+    if user_id == "guest":
+        return render_template("guest.html", comments=db.session.query(Comment).all())
+    else:
+        logged_user = User.query.get(user_id)
+        return render_template(
+            "index.html",
+            logged_user=logged_user,
+            comments=db.session.query(Comment).all(),
+        )
+
+
+# TODO: CATEGORIES FILTER--
+@app.route("/categories/<id>/<u_id>")
+def FilteredPosts(id, uid):
+    logged_id = GetLoggedUserId(uid)
+    return redirect(url_for("Index", user_id=logged_id))
+
+
+
+@app.route("/categories")
+def ViewCategories():
+    return render_template("categories.html")
+
+
+@app.route("/users")
+def ViewUsers():
+    return render_template("users.html")
+
+@app.route("/add_category", methods=["POST"])
+def Addcategory():
+    if request.method == "POST":
+        name = request.form["name"]
+        new_category = Category(name=name)
+        db.session.add(new_category)
+        db.session.commit()
+        return redirect(url_for("ViewCategories"))
+
+@app.route("/add_user", methods=["POST"])
+def AddUser():
+    if request.method == "POST":
+        name = request.form["name"]
+        email = request.form["email"]
+        passw = request.form["password"]
+        img = request.form["image"]
+        new_user = User(name=name, email=email, password=passw, image=img)
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect(url_for("ViewUsers"))
+
+
+@app.route("/add_post/<uid>", methods=["POST"])
+def AddPost(uid):
+    if request.method == "POST":
+        title = request.form["title"]
+        content = request.form["content"]
+        category = request.form["category"]
+        logged_id = GetLoggedUserId(uid)
+        new_post = Post(
+            title=title, content=content, category_id=category, user_id=logged_id
+        )
         db.session.add(new_post)
         db.session.commit()
 
-        return redirect(url_for('Index'))
+        return redirect(url_for("Index", user_id=logged_id))
 
-@app.route("/add_comment/<post_id>", methods=['POST'])
-def AddComment(post_id):
-    if request.method=='POST':
-        content = request.form['content']
+
+@app.route("/add_comment/<post_id>/<uid>", methods=["POST"])
+def AddComment(post_id, uid):
+    if request.method == "POST":
+        content = request.form["content"]
         post = post_id
-        #obtener el user
-        user=1 #TODO
-        new_comment=Comment(content=content, user_id=user, post_id=post)
+        logged_id = GetLoggedUserId(uid)
+        new_comment = Comment(content=content, user_id=logged_id, post_id=post)
         db.session.add(new_comment)
         db.session.commit()
 
-        return redirect(url_for('Index'))
+        return redirect(url_for("Index", user_id=logged_id))
 
-@app.route("/delete_post/<id>")
-def deletePost(id):
-    post=Post.query.get(id)
+
+@app.route("/delete_post/<id>/<uid>")
+def deletePost(id, uid):
+    post = Post.query.get(id)
     db.session.delete(post)
     db.session.commit()
-    return redirect(url_for('Index'))
+    logged_id = GetLoggedUserId(uid)
+    return redirect(url_for("Index", user_id=logged_id))
 
-@app.route("/delete_comment/<id>")
-def deleteComment(id):
-    comm=Comment.query.get(id)
+
+@app.route("/delete_comment/<id>/<uid>")
+def deleteComment(id, uid):
+    comm = Comment.query.get(id)
     db.session.delete(comm)
     db.session.commit()
-    return redirect(url_for('Index'))
+    logged_id = GetLoggedUserId(uid)
+    return redirect(url_for("Index", user_id=logged_id))
 
+
+@app.route("/delete_user/<id>")
+def deleteUser(id):
+    usr = User.query.get(id)
+    db.session.delete(usr)
+    db.session.commit()
+    return redirect(url_for("ViewUsers"))
+
+@app.route("/delete_category/<id>")
+def deleteCategory(id):
+    cat = Category.query.get(id)
+    db.session.delete(cat)
+    db.session.commit()
+    return redirect(url_for("ViewCategories"))
