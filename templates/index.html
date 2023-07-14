@@ -6,7 +6,7 @@
 
 <div class="container mx-auto text-center mt-3">
   <h3>Agrega una publicación...</h3>
-  <div class="text-start"><small>logeado como '{{logged_user.name}}'</small></div>
+  <div class="text-start"><small><img src="../static/img/{{logged_user.image}}.jpg" alt="foto de perfil" class="rounded-circle" style="height: 50px; width: 50px;"> '{{logged_user.name}}'</small></div>
   <form action="/add_post/{{logged_user.id}}" method="post" class="mb-3 d-flex justify-content-end flex-wrap">
     <label for="title"></label>
     <input class="form-control w-100" type="text" name="title" id="" placeholder="¡¡Título!!">
@@ -23,6 +23,7 @@
 </div>
 
 <!--empieza Post Main  -->
+{%if posts|count > 0%}
 {%for post in posts%}
 <div class=" my-1 mx-5 row border">
   <div class="col-12 col-sm-3 text-center">
@@ -37,7 +38,7 @@
       <a href="/categories/{{post.category.id}}/{{logged_user.id}}">{{post.category.name}}</a>
       <p> | {{post.time_created}}</p>
       <!-- SI EDITADO, MOSTRAR TIMESTAMP -->
- 
+
     </div>
     <hr class="my-1">
     <p class=" text-break">{{post.content}} </p>
@@ -81,8 +82,8 @@
 
             <div class="col-12 col-sm-2 text-center border-end">
               <p class="m-0">{{comment.user.name}} dice:</p>
-              <img class="rounded-circle mx-3 w-auto" style="height: 50px;" src="../static/img/{{comment.user.image}}.jpg"
-                alt="foto de perfil">
+              <img class="rounded-circle mx-3 w-auto" style="height: 50px;"
+                src="../static/img/{{comment.user.image}}.jpg" alt="foto de perfil">
             </div>
             <div class="col-12 col-sm-10">
               <small class="border-bottom">{{comment.time_created}}</small>
@@ -114,6 +115,7 @@
 
             {%endfor%}
             <form action="/add_comment/{{post.id}}/{{logged_user.id}}" method="post" class="my-2 d-flex ">
+              <img src="../static/img/{{logged_user.image}}.jpg" alt="foto de perfil" class="rounded-circle" style="height: 50px; width: 50px;">
               <label for="content"></label>
               <input class="form-control" type="text" name="content" id="" placeholder="¡¿Qué opinas?!">
               <button class="btn btn-primary" type="sumbit"> Comentar</button>
@@ -129,7 +131,11 @@
 </div>
 <br>
 {%endfor%}
-
+{%else%}
+<div class="container my-3 text-center border-top">
+  <h1>Parece que aún no hay posteos...</h1>
+</div>
+{%endif%}
 <!-- CARTELITO
   <div class="modal fade" id="modal_confirmacion" tabindex="-1" role="dialog"
                             aria-labelledby="modal_confirmacionTitle" aria-hidden="true">

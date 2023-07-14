@@ -17,7 +17,7 @@
   <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
-        <a class="navbar-brand" >MiniBlog</a>
+        <a class="navbar-brand">MiniBlog</a>
         <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse"
           data-bs-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false"
           aria-label="Toggle navigation">
@@ -26,7 +26,7 @@
         <div class="collapse navbar-collapse" id="collapsibleNavId">
           <ul class="navbar-nav me-auto mt-2 mt-lg-0">
             <li class="nav-item">
-              <a class="nav-link active" href="/" aria-current="page">Invitado</a>
+              <a class="nav-link active" href="/guest" aria-current="page">Invitado</a>
             </li>
             <li class="nav-item">
               <a class="nav-link active" href="/categories" aria-current="page">Categorías</a>
@@ -36,7 +36,9 @@
                 aria-haspopup="true" aria-expanded="false">Elegir Usuario</a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <a class="dropdown-item" href="/users">Administrar</a>
-                <li><hr class="dropdown-divider"></li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
                 {%for user in users%}
                 <a class="dropdown-item" href="/{{user.id}}">{{user.name}}</a>
                 {%endfor%}

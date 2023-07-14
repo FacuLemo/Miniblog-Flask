@@ -17,9 +17,9 @@
             <form action="/add_user" method="post" class="mb-3 d-flex justify-content-end flex-wrap">
                 <label for="name"></label>
                 <input class="form-control w-100" type="text" name="name" id="" placeholder="Nombre de usuario">
-                <label for="email">Email</label>
+                <label for="email"></label>
                 <input class="form-control w-100" type="email" name="email" id="" placeholder="correo@correo.com">
-                <label for="password">Contraseña</label>
+                <label for="password"></label>
                 <input class="form-control w-100" type="password" name="password" id="" placeholder="contraseña">
                 <label for="image" class="form-label"></label>
                 <select id="" name="image" placeholder="Elige imagen de perfil">
@@ -29,7 +29,7 @@
                     <option value="4">Michael Jackson</option>
                     <option value="5">Portal Cake</option>
                     <option value="6">Luca</option>
-                  </select>
+                </select>
                 <button type="submit" class="btn btn-primary">Crear usuario</button>
             </form>
 
@@ -39,24 +39,31 @@
 
 <!-- Termina acordeón Creación user -->
 <br>
+
 <!-- empieza crud Usuarios -->
 <div class="table-responsive container text-center">
+    <h2>Usuarios</h2>
     <table class="table table-primary">
         <thead>
             <tr>
-                <th scope="col">Usuario </th>
+                <th scope="col">Imagen </th>
+                <th scope="col">Nombre </th>
                 <th scope="col">Posteos</th>
                 <th scope="col">Comentarios</th>
                 <th scope="col">Borrar? </th>
+                <th scope="col">Elegir </th>
             </tr>
         </thead>
         <tbody>
             {%for user in users%}
             <tr class="">
-                <td scope="row">{{user.name}}</td>
+                <td scope="row" ><img src="../static/img/{{user.image}}.jpg" alt="foto de perfil" class="rounded-circle" style="height: 50px; width: 50px;"></td>
+                <td scope="row" >{{user.name}}</td>
                 <td scope="row"><a name="" id="" class="btn btn-primary" href="#" role="button">Ver Posts</a></td>
                 <td scope="row"><a name="" id="" class="btn btn-primary" href="#" role="button">Ver comments</a></td>
-                <td scope="row"><a name="" id="" class="btn btn-danger" href="/delete_user/{{user.id}}" role="button">Borrar</a></td>
+                <td scope="row"><a name="" id="" class="btn btn-danger" href="/delete_user/{{user.id}}"
+                        role="button">Borrar</a></td>
+                <td scope="row"><a name="" id="" class="btn btn-success" href="/{{user.id}}" role="button">Entrar!</a></td>
             </tr>
             {%endfor%}
         </tbody>

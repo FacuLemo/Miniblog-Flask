@@ -4,10 +4,50 @@
 
 {%block main%}
 
-{%for category in categories%}
-<h1><a href="">{{category.name}}</a></h1>
-{%endfor%}
 
-<div>crear categoria</div>
+<br>
+<!-- Acordeón Crear Usuario -->
+<div class="cointainer text-center">
+    <button class="btn btn-success mb-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+        aria-expanded="false" aria-controls="collapseExample">
+        Crear categoría
+    </button>
+
+    <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+            <form action="/add_category" method="post" class="mb-3 d-flex justify-content-end flex-wrap">
+                <label for="name"></label>
+                <input class="form-control w-100" type="text" name="name" id="" placeholder="Nombre de la categoría">
+                <button type="submit" class="btn btn-primary">Crear Categoría</button>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- Termina acordeón Creación user -->
+<br>
+<!-- empieza crud Usuarios -->
+<div class="table-responsive container text-center">
+    <table class="table table-primary">
+        <thead>
+            <tr>
+                <th scope="col">Categoría </th>
+                <th scope="col">Posteos</th>
+                <th scope="col">Borrar? </th>
+            </tr>
+        </thead>
+        <tbody>
+            {%for category in categories%}
+            <tr class="">
+                <td scope="row">{{category.name}}</td>
+                <td scope="row"><a name="" id="" class="btn btn-primary" href="#" role="button">Ver Posts</a></td>
+                <td scope="row"><a name="" id="" class="btn btn-danger" href="/delete_category/{{category.id}}"
+                        role="button">Borrar</a></td>
+            </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+</div>
 
 {%endblock%}

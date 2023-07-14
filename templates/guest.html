@@ -10,6 +10,7 @@
     <h5>Para postear y comentar <a href="/users">Crea o elige un usuario</a>.</h5>
 </div>
 <br><br>
+{%if posts|count > 0%}
 {%for post in posts%}
 <div class=" my-1 mx-5 row border">
     <div class="col-12 col-sm-3 text-center">
@@ -74,5 +75,10 @@
 </div>
 <br>
 {%endfor%}
+{%else%}
+<div class="container my-3 text-center border-top">
+  <h1>Parece que aún no hay posteos...</h1>
+</div>
+{%endif%}
 
 {%endblock%}
