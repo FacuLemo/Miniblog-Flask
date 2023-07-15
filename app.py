@@ -73,7 +73,6 @@ def GetLoggedUserId(uid):
     return logged_id
 
 
-
 @app.context_processor
 def inject_paises():
     posts = db.session.query(Post).order_by(Post.id.desc()).all()
@@ -81,7 +80,7 @@ def inject_paises():
     categ = db.session.query(Category).all()
     category1 = db.session.query(Category).first()
     if category1 == None:
-        category_default = Category(name='Misceláneo')
+        category_default = Category(name="Misceláneo")
         db.session.add(category_default)
         db.session.commit()
     return dict(posts=posts, users=users, categories=categ)
@@ -102,6 +101,7 @@ def Index(user_id):
             "index.html",
             logged_user=logged_user,
             comments=db.session.query(Comment).all(),
+            acumulator=0,
         )
 
 
@@ -110,7 +110,6 @@ def Index(user_id):
 def FilteredPosts(id, uid):
     logged_id = GetLoggedUserId(uid)
     return redirect(url_for("Index", user_id=logged_id))
-
 
 
 @app.route("/categories")
@@ -122,6 +121,7 @@ def ViewCategories():
 def ViewUsers():
     return render_template("users.html")
 
+
 @app.route("/add_category", methods=["POST"])
 def Addcategory():
     if request.method == "POST":
@@ -130,6 +130,7 @@ def Addcategory():
         db.session.add(new_category)
         db.session.commit()
         return redirect(url_for("ViewCategories"))
+
 
 @app.route("/add_user", methods=["POST"])
 def AddUser():
@@ -191,12 +192,36 @@ def deleteComment(id, uid):
     return redirect(url_for("Index", user_id=logged_id))
 
 
+@app.route("/edit_post/<id>/<uid>", methods=["POST"])
+def editPost(id, uid):
+    title = request.form["title"]
+    content = request.form["content"]
+    post = Post.query.get(id)
+    if title != '':
+        post.title=title
+    if content != '':
+        post.content=content
+    db.session.commit()
+    logged_id = GetLoggedUserId(uid)
+    return redirect(url_for("Index", user_id=logged_id))
+
+@app.route("/edit_comment/<id>/<uid>", methods=["POST"])
+def editComment(id, uid):
+    content = request.form["content"]
+    comment = Comment.query.get(id)
+    if content != '':
+        comment.content=content
+    db.session.commit()
+    logged_id = GetLoggedUserId(uid)
+    return redirect(url_for("Index", user_id=logged_id))
+
 @app.route("/delete_user/<id>")
 def deleteUser(id):
     usr = User.query.get(id)
     db.session.delete(usr)
     db.session.commit()
     return redirect(url_for("ViewUsers"))
+
 
 @app.route("/delete_category/<id>")
 def deleteCategory(id):
