@@ -74,7 +74,7 @@ def GetLoggedUserId(uid):
 
 
 @app.context_processor
-def inject_paises():
+def inject_context():
     posts = db.session.query(Post).order_by(Post.id.desc()).all()
     users = db.session.query(User).all()
     categ = db.session.query(Category).all()

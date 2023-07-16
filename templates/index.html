@@ -5,14 +5,15 @@
 {%block main%}
 <!-- Add Post section -->
 <div class="container mx-auto text-center mt-3">
-  <h3>Agrega una publicación...</h3>
-  <div class="text-start border rounded"><small><img src="../static/img/{{logged_user.image}}.jpg" alt="foto de perfil"
-        class="rounded-circle" style="height: 50px; width: 50px;"> '{{logged_user.name}}'</small></div>
+  <h3>¡Bienvenido, {{logged_user.name}}!</h3>
+  <h4>Agrega una publicación:</h4>
+  
   <form action="/add_post/{{logged_user.id}}" method="post" class="mb-3 d-flex justify-content-end flex-wrap">
     <label for="title"></label>
     <input class="form-control w-100" type="text" name="title" id="" placeholder="¡¡Título!!">
     <label for="content"></label>
     <input class="form-control w-100" type="text" name="content" id="" placeholder="¿¡Qué estás pensando!?">
+    
     <label for="category" class="form-label"></label>
     <select id="" name="category" placeholder="Elige categoría">
       {%for category in categories%}
@@ -20,6 +21,8 @@
       {%endfor%}
     </select>
     <button type="submit" class="btn btn-primary">Agregar Posteo</button>
+    <img src="../static/img/{{logged_user.image}}.jpg" alt="foto de perfil"
+      class="rounded-circle" style="height: 40px; width: 40px;">
   </form>
 </div>
 
@@ -124,8 +127,7 @@
           <div class="accordion-body row">
             <!-- empiezan comentarios -->
 
-            {%for comment in comments%}
-            {% if comment.post.id == post.id %}
+            {%for comment in comments if comment.post.id == post.id%}
 
             <div class="col-12 col-sm-2 text-center border-end">
               <p class="m-0">{{comment.user.name}} dice:</p>
@@ -198,7 +200,10 @@
             <!-- FIN MODAL -->
             {%endif%}
             <hr class="m-0">
-            {% endif %}
+            {%else%}
+            <div class="container text-center">
+              <p>Parece que aún no hay comentarios. ¡Sé el primero!</p>
+            </div>
 
             {%endfor%}
             <form action="/add_comment/{{post.id}}/{{logged_user.id}}" method="post" class="my-2 d-flex ">
