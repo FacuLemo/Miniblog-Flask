@@ -1,6 +1,6 @@
 {%extends 'layout.html'%}
 
-{%block title%} Categorías - MiniBlog {%endblock%}
+{%block title%} Usuarios - MiniBlog {%endblock%}
 
 {%block main%}
 
@@ -49,7 +49,6 @@
                 <th scope="col">Imagen </th>
                 <th scope="col">Nombre </th>
                 <th scope="col">Posteos</th>
-                <th scope="col">Comentarios</th>
                 <th scope="col">Borrar? </th>
                 <th scope="col">Elegir </th>
             </tr>
@@ -57,14 +56,45 @@
         <tbody>
             {%for user in users%}
             <tr class="">
-                <td scope="row" ><img src="../static/img/{{user.image}}.jpg" alt="foto de perfil" class="rounded-circle" style="height: 50px; width: 50px;"></td>
-                <td scope="row" >{{user.name}}</td>
-                <td scope="row"><a name="" id="" class="btn btn-primary" href="#" role="button">Ver Posts</a></td>
-                <td scope="row"><a name="" id="" class="btn btn-primary" href="#" role="button">Ver comments</a></td>
+                <td scope="row"><img src="../static/img/{{user.image}}.jpg" alt="foto de perfil" class="rounded-circle"
+                        style="height: 50px; width: 50px;"></td>
+                <td scope="row">{{user.name}}</td>
+                <td scope="row"><a name="" id="" class="btn btn-primary" href="/filter/user/{{user.id}}/guest" role="button">Ver sus Posts como Invitado</a></td>
                 <td scope="row"><a name="" id="" class="btn btn-danger" href="/delete_user/{{user.id}}"
-                        role="button">Borrar</a></td>
-                <td scope="row"><a name="" id="" class="btn btn-success" href="/{{user.id}}" role="button">Entrar!</a></td>
+                        role="button">Borrar usuario</a></td>
+                <td scope="row"><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#Modal{{user.id}}"> ¡Entrar!
+                </button>
+                </td>
             </tr>
+
+            <!-- EMPIEZA MODAL DE VALIDACION DE USER -->
+            <div class="modal fade" id="Modal{{user.id}}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Ingrese contraseña de {{user.name}}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            
+                            <form >
+                                <div class="mb-3">
+                                    <label for="title" class="col-form-label">Contraseña:</label>
+                                    <input type="password" class="form-control" name="title"></input>
+                                </div>
+                            </form>
+                            <small>PISTA: no hay validación de contraseña. Podés ingresar cualquier cosa.</small>
+                            
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Cerrar</button>
+                            <a  href="/{{user.id}}" class="btn btn-success">Entrar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- FIN MODAL -->
             {%endfor%}
         </tbody>
     </table>
