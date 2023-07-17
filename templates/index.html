@@ -5,15 +5,16 @@
 {%block main%}
 <!-- Add Post section -->
 <div class="container mx-auto text-center mt-3">
+  {%if logged_user != 'guest'%}
   <h3>¡Bienvenido, {{logged_user.name}}!</h3>
   <h4>Agrega una publicación:</h4>
-  
+
   <form action="/add_post/{{logged_user.id}}" method="post" class="mb-3 d-flex justify-content-end flex-wrap">
     <label for="title"></label>
     <input class="form-control w-100" type="text" name="title" id="" placeholder="¡¡Título!!">
     <label for="content"></label>
     <input class="form-control w-100" type="text" name="content" id="" placeholder="¿¡Qué estás pensando!?">
-    
+
     <label for="category" class="form-label"></label>
     <select id="" name="category" placeholder="Elige categoría">
       {%for category in categories%}
@@ -21,9 +22,14 @@
       {%endfor%}
     </select>
     <button type="submit" class="btn btn-primary">Agregar Posteo</button>
-    <img src="../static/img/{{logged_user.image}}.jpg" alt="foto de perfil"
-      class="rounded-circle" style="height: 40px; width: 40px;">
+    <img src="../static/img/{{logged_user.image}}.jpg" alt="{{logged_user.name}}" class="rounded-circle"
+      style="height: 40px; width: 40px;">
   </form>
+  {%else%}
+  <h1>Bienvenido al MiniBlog.</h1>
+    <h3>Ahora mismo estás en modo invitado.</h3>
+    <h5 class="mb-5">Para postear y comentar <a href="/users">Crea o elige un usuario</a>.</h5>
+  {%endif%}
 </div>
 
 <!-- termina add post -->
@@ -35,16 +41,24 @@
 <div class=" my-1 mx-5 row border">
   <!-- user data -->
   <div class="col-12 col-sm-3 text-center">
-    <p class="m-0">{{post.user.name}} dice:</p>
+    {%if logged_user != 'guest'%}
+    <p class="m-0"><a href="/filter/user/{{post.user.id}}/{{logged_user.id}}">{{post.user.name}}</a> dice:</p>
+    {%else%}
+    <p class="m-0"><a href="/filter/user/{{post.user.id}}/guest">{{post.user.name}}</a> dice:</p>
+    {%endif%}
     <img class="container rounded-circle  w-auto" style="height: 100px;" src="../static/img/{{post.user.image}}.jpg"
-      alt="foto de perfil">
+      alt="foto de {{post.user.name}}">
   </div>
   <!-- post content -->
   <div class="col-12 col-sm-9">
     <div class="d-flex flex-wrap">
 
       <h4 class="flex-grow-1">{{post.title}}</h4>
-      <a href="/categories/{{post.category.id}}/{{logged_user.id}}">{{post.category.name}}</a>
+      {%if logged_user != 'guest'%}
+      <a href="/filter/category/{{post.category.id}}/{{logged_user.id}}">{{post.category.name}}</a>
+      {%else%}
+      <a href="/filter/category/{{post.category.id}}/guest">{{post.category.name}}</a>
+      {%endif%}
       <p> | {{post.time_created}}</p>
       {%if post.time_updated %}
       <p>| <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil"
@@ -57,7 +71,7 @@
     <hr class="my-1">
     <p class=" text-break">{{post.content}} </p>
 
-    {%if logged_user.id == post.user.id%}
+    {%if logged_user != 'guest' and logged_user.id == post.user.id%}
     <!-- BOTONES para el user -->
     <div class="d-flex justify-content-end mb-1">
       <div class="btn-group" role="group" aria-label="Basic example">
@@ -109,6 +123,7 @@
       </div>
     </div>
     <!-- FIN MODAL -->
+
     {%endif%}
     <!-- termina post content -->
 
@@ -132,7 +147,7 @@
             <div class="col-12 col-sm-2 text-center border-end">
               <p class="m-0">{{comment.user.name}} dice:</p>
               <img class="rounded-circle mx-3 w-auto" style="height: 50px;"
-                src="../static/img/{{comment.user.image}}.jpg" alt="foto de perfil">
+                src="../static/img/{{comment.user.image}}.jpg" alt="foto de {{comment.user.name}}">
             </div>
             <div class="col-12 col-sm-10">
               <small class="border-bottom">{{comment.time_created}}
@@ -148,7 +163,8 @@
               <p class="col-12 col-sm-10">{{comment.content}}</p>
             </div>
             <!-- Condicional Para editar/borrar -->
-            {%if logged_user.id == comment.user.id%}
+            {%if logged_user != 'guest' and logged_user.id == comment.user.id%}
+
             <!-- BOTONES -->
             <div class="d-flex justify-content-end mb-1">
               <div class="btn-group" role="group" aria-label="Basic example">
@@ -198,21 +214,23 @@
               </div>
             </div>
             <!-- FIN MODAL -->
+
             {%endif%}
             <hr class="m-0">
             {%else%}
             <div class="container text-center">
-              <p>Parece que aún no hay comentarios. ¡Sé el primero!</p>
+              <p>Parece que aún no hay comentarios.</p>
             </div>
-
             {%endfor%}
+            {%if logged_user != 'guest'%}
             <form action="/add_comment/{{post.id}}/{{logged_user.id}}" method="post" class="my-2 d-flex ">
-              <img src="../static/img/{{logged_user.image}}.jpg" alt="foto de perfil" class="rounded-circle"
+              <img src="../static/img/{{logged_user.image}}.jpg" alt="foto de {{logged_user.name}}" class="rounded-circle"
                 style="height: 50px; width: 50px;">
               <label for="content"></label>
               <input class="form-control" type="text" name="content" id="" placeholder="¡¿Qué opinas?!">
               <button class="btn btn-primary" type="sumbit"> Comentar</button>
             </form>
+            {%endif%}
           </div>
         </div>
       </div>
@@ -223,8 +241,8 @@
 </div>
 <br>
 {%endfor%}
-<!-- Si no  hay posteos.. -->
 {%else%}
+<!-- Si no  hay posteos.. -->
 <div class="container my-3 text-center border-top">
   <h1>Parece que aún no hay posteos...</h1>
 </div>

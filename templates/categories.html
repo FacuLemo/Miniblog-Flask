@@ -41,7 +41,7 @@
             {%for category in categories%}
             <tr class="">
                 <td scope="row">{{category.name}}</td>
-                <td scope="row"><a name="" id="" class="btn btn-primary" href="#" role="button">Ver Posts</a></td>
+                <td scope="row"><a name="" id="" class="btn btn-primary" href="/filter/category/{{category.id}}/guest" role="button">Ver Posts</a></td>
                 <td scope="row"><a name="" id="" class="btn btn-danger" href="/delete_category/{{category.id}}"
                         role="button">Borrar</a></td>
             </tr>

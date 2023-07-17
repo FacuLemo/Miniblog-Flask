@@ -1,6 +1,6 @@
 {%extends 'layout.html'%}
 
-{%block title%} Categorías - MiniBlog {%endblock%}
+{%block title%} Usuarios - MiniBlog {%endblock%}
 
 {%block main%}
 
@@ -49,7 +49,6 @@
                 <th scope="col">Imagen </th>
                 <th scope="col">Nombre </th>
                 <th scope="col">Posteos</th>
-                <th scope="col">Comentarios</th>
                 <th scope="col">Borrar? </th>
                 <th scope="col">Elegir </th>
             </tr>
@@ -60,10 +59,9 @@
                 <td scope="row"><img src="../static/img/{{user.image}}.jpg" alt="foto de perfil" class="rounded-circle"
                         style="height: 50px; width: 50px;"></td>
                 <td scope="row">{{user.name}}</td>
-                <td scope="row"><a name="" id="" class="btn btn-primary" href="#" role="button">Ver Posts</a></td>
-                <td scope="row"><a name="" id="" class="btn btn-primary" href="#" role="button">Ver comments</a></td>
+                <td scope="row"><a name="" id="" class="btn btn-primary" href="/filter/user/{{user.id}}/guest" role="button">Ver sus Posts como Invitado</a></td>
                 <td scope="row"><a name="" id="" class="btn btn-danger" href="/delete_user/{{user.id}}"
-                        role="button">Borrar</a></td>
+                        role="button">Borrar usuario</a></td>
                 <td scope="row"><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#Modal{{user.id}}"> ¡Entrar!
                 </button>
                 </td>
