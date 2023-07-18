@@ -9,6 +9,15 @@ A miniblog/twitter clone made in Python using Flask and SQLAlchemy.
  - Python
  - HTML
 
+## Capturas
+<img src="https://i.ibb.co/5Lk0GYT/miniblog-muro.png" alt="miniblog-muro" border="0">
+*****
+<img src="https://i.ibb.co/d6x2dkp/miniblog-filter1.png" alt="miniblog-filter1" border="0">
+*****
+<img src="https://i.ibb.co/gJrTHsw/miniblog-user.png" alt="miniblog-user" border="0">
+*****
+<img src="https://i.ibb.co/71Ps3Kf/miniblog-edit.png" alt="miniblog-edit" border="0">
+
 ## Set-Up
 
 Para correr este projecto, se necesita una versión actualizada de python funcionar y [Xampp](https://www.apachefriends.org/es/index.html) para simular la base de datos de manera local. Se deben seguir los siguientes pasos:
