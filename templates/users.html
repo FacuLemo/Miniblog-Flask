@@ -59,13 +59,34 @@
                 <td scope="row"><img src="../static/img/{{user.image}}.jpg" alt="foto de perfil" class="rounded-circle"
                         style="height: 50px; width: 50px;"></td>
                 <td scope="row">{{user.name}}</td>
-                <td scope="row"><a name="" id="" class="btn btn-primary" href="/filter/user/{{user.id}}/guest" role="button">Ver sus Posts como Invitado</a></td>
-                <td scope="row"><a name="" id="" class="btn btn-danger" href="/delete_user/{{user.id}}"
-                        role="button">Borrar usuario</a></td>
-                <td scope="row"><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#Modal{{user.id}}"> ¡Entrar!
-                </button>
-                </td>
+                <td scope="row"><a name="" id="" class="btn btn-primary" href="/filter/user/{{user.id}}/guest"
+                        role="button">Ver sus Posts como Invitado</a></td>
+                <td scope="row"><button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                        data-bs-target="#Modalborrar{{user.id}}"> Borrar usuario
+                    </button></td>
+                <td scope="row"><button type="button" class="btn btn-success" data-bs-toggle="modal"
+                        data-bs-target="#Modal{{user.id}}"> ¡Entrar!
+                    </button></td>
             </tr>
+            <!-- EMPIEZA MODAL BORRAR USER -->
+            <div class="modal fade" id="Modalborrar{{user.id}}" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Borrar la cuenta de {{user.name}}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>¿Estás seguro que quieres borrar la cuenta de {{user.name}}? Se eliminarán sus posteos y
+                                sus comentarios. Esta acción no se puede deshacer.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <a href="/delete_user/{{user.id}}" class="btn btn-danger">Borrar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- EMPIEZA MODAL DE VALIDACION DE USER -->
             <div class="modal fade" id="Modal{{user.id}}" tabindex="-1" aria-hidden="true">
@@ -76,7 +97,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            
+
                             <form action="/{{user.id}}">
                                 <div class="mb-3">
                                     <label for="title" class="col-form-label">Contraseña:</label>
@@ -84,17 +105,16 @@
                                 </div>
                             </form>
                             <small>PISTA: no hay validación de contraseña. Podés ingresar cualquier cosa.</small>
-                            
+
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary"
-                                data-bs-dismiss="modal">Cerrar</button>
-                            <a  href="/{{user.id}}" class="btn btn-success">Entrar</a>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <a href="/{{user.id}}" class="btn btn-success">Entrar</a>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- FIN MODAL -->
+            <!-- FIN MODALES -->
             {%endfor%}
         </tbody>
     </table>
