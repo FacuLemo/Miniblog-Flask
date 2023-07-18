@@ -15,7 +15,7 @@ migrate = Migrate(app, db)
 
 
 class Category(db.Model):
-    __tablename__ = "category"  # --> si no esta, adopta el nombre de la clase
+    __tablename__ = "category"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     posts = db.relationship("Post", backref="category", cascade="all,delete")
@@ -32,7 +32,8 @@ class User(db.Model):
     password = db.Column(db.String(100), nullable=False)
     image = db.Column(db.Integer, nullable=False, default=1)
     posts = db.relationship("Post", backref="user", cascade="all,delete")
-    comments = db.relationship("Comment", backref="user", cascade="all,delete")
+    comments = db.relationship("Comment", backref="user",
+                               cascade="all,delete")
 
     def __str__(self):
         return f"-User data: {self.nombre}, {self.email}."
@@ -43,11 +44,19 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(70), nullable=False)
     content = db.Column(db.String(500), nullable=True)
-    time_created = db.Column(DateTime(timezone=True), server_default=func.now())
+    time_created = db.Column(DateTime(timezone=True),
+                            server_default=func.now()
+                            )
     time_updated = db.Column(DateTime(timezone=True), onupdate=func.now())
-    user_id = db.Column(db.Integer, ForeignKey("user.id"), nullable=False)
-    category_id = db.Column(db.Integer, ForeignKey("category.id"), nullable=True)
-    comments = db.relationship("Comment", backref="post", cascade="all,delete")
+    user_id = db.Column(db.Integer, ForeignKey("user.id"),
+                        nullable=False
+                        )
+    category_id = db.Column(db.Integer, ForeignKey("category.id"),
+                            nullable=True
+                            )
+    comments = db.relationship("Comment", backref="post",
+                               cascade="all,delete"
+                               )
 
     def __str__(self):
         return f"-Category: f{self.name}"
@@ -57,7 +66,9 @@ class Comment(db.Model):
     __tablename__ = "comment"
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(200), nullable=False)
-    time_created = db.Column(DateTime(timezone=True), server_default=func.now())
+    time_created = db.Column(DateTime(timezone=True),
+                            server_default=func.now()
+                            )
     time_updated = db.Column(DateTime(timezone=True), onupdate=func.now())
     user_id = db.Column(db.Integer, ForeignKey("user.id"), nullable=False)
     post_id = db.Column(db.Integer, ForeignKey("post.id"), nullable=False)
@@ -102,11 +113,15 @@ def Index(user_id):
 
 
 @app.route("/filter/<ftype>/<tid>/<u_id>")
-# fTYPE: filter type (user/categ). / TID: (selected type) id  . / UID: logged user id.
+# fTYPE: filter type (user/categ).
+# TID: (selected type) id.
+# UID: logged user id.
 def FilteredPosts(ftype, tid, u_id):
     logged_user = get_logged_user(u_id)
     if ftype == "user":
-        posts = Post.query.filter_by(user_id=tid).order_by(Post.id.desc()).all()
+        posts = Post.query.filter_by(
+            user_id=tid
+            ).order_by(Post.id.desc()).all()
         ftext = f"posteos del usuario '{User.query.get(tid).name}'"
         return render_template(
             "filtered.html",
@@ -117,7 +132,9 @@ def FilteredPosts(ftype, tid, u_id):
         )
 
     if ftype == "category":
-        posts = Post.query.filter_by(category_id=tid).order_by(Post.id.desc()).all()
+        posts = Post.query.filter_by(
+            category_id=tid
+            ).order_by(Post.id.desc()).all()
         ftext = f"posteos en la categoría '{Category.query.get(tid).name}'"
         return render_template(
             "filtered.html",
@@ -155,7 +172,9 @@ def AddUser():
         email = request.form["email"]
         passw = request.form["password"]
         img = request.form["image"]
-        new_user = User(name=name, email=email, password=passw, image=img)
+        new_user = User(name=name, email=email,
+                        password=passw, image=img
+                        )
         db.session.add(new_user)
         db.session.commit()
         return redirect(url_for("ViewUsers"))
@@ -168,7 +187,8 @@ def AddPost(uid):
         content = request.form["content"]
         category = request.form["category"]
 
-        new_post = Post(title=title, content=content, category_id=category, user_id=uid)
+        new_post = Post(title=title, content=content,
+                        category_id=category, user_id=uid)
         db.session.add(new_post)
         db.session.commit()
 
@@ -181,7 +201,10 @@ def AddComment(post_id, uid):
         content = request.form["content"]
         post = post_id
 
-        new_comment = Comment(content=content, user_id=uid, post_id=post)
+        new_comment = Comment(content=content, 
+                              user_id=uid,
+                              post_id=post,
+                              )
         db.session.add(new_comment)
         db.session.commit()
 

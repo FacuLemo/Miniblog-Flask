@@ -81,11 +81,11 @@
                         <form action="/edit_post/{{post.id}}/{{logged_user.id}}" method="post">
                             <div class="mb-3">
                                 <label for="title" class="col-form-label">Título</label>
-                                <input type="text" class="form-control" name="title"></input>
+                                <input type="text" class="form-control" name="title" value="{{post.title}}"></input>
                             </div>
                             <div class="mb-3">
                                 <label for="content" class="col-form-label">Contenido</label>
-                                <textarea class="form-control" name="content"></textarea>
+                                <textarea class="form-control" name="content">{{post.content}}</textarea>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -164,7 +164,7 @@
                             </div>
                         </div>
                         <!-- FIN BOTONES -->
-                        <!-- EMPIEZA MODAL DE EDICIÓN DEL POST -->
+                        <!-- EMPIEZA MODAL DE EDICIÓN DEL COMMENT -->
                         <div class="modal fade" id="ModalCom{{comment.id}}" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -178,7 +178,7 @@
 
                                             <div class="mb-3">
                                                 <label for="content" class="col-form-label">Contenido</label>
-                                                <textarea class="form-control" name="content"></textarea>
+                                                <textarea class="form-control" name="content">{{comment.content}}</textarea>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
