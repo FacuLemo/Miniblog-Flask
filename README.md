@@ -9,6 +9,22 @@ A miniblog/twitter clone made in Python using Flask and SQLAlchemy.
  - Python
  - HTML
 
+## Capturas
+
+<img src="https://i.ibb.co/wsFttrx/miniblog-muro.png" alt="miniblog-muro" border="0">
+
+----
+
+<img src="https://i.ibb.co/B4cSyH9/miniblog-filter1.png" alt="miniblog-filter1" border="0">
+
+----
+
+<img src="https://i.ibb.co/Tq9jw6H/miniblog-user.png" alt="miniblog-user" border="0">
+
+----
+
+<img src="https://i.ibb.co/DWbc0b1/miniblog-edit.png" alt="miniblog-edit" border="0">
+
 ## Set-Up
 
 Para correr este projecto, se necesita una versión actualizada de python funcionar y [Xampp](https://www.apachefriends.org/es/index.html) para simular la base de datos de manera local. Se deben seguir los siguientes pasos:
@@ -32,7 +48,7 @@ Una vez activado el entorno virtual, le vamos a instalar los requerimientos con 
 ```bash
   pip install -r requirements.txt
 ```
-*****
+---
 Ahora, sin cerrar la terminal, abriremos [Xampp](https://www.apachefriends.org/es/index.html) e iniciaremos sus servicios.
 En windows puede ser abierto su acceso directo, pero en linux debemos ingresar el siguiente comando:
 ```bash
@@ -50,7 +66,7 @@ Para iniciarla, volveremos a la terminal donde tenemos activado el entorno virtu
   flask db migrate -m "creacion de tablas"
   flask db upgrade
 ```
-******
+---
 
 y finalmente, corremos el proyecto con un:
 ```bash
