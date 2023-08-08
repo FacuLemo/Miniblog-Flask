@@ -60,11 +60,9 @@ Ingresaremos al módulo de [base de datos de Xampp](http://localhost/phpmyadmin/
   lemo_miniblog
 ```
 de tener otro nombre la aplicación NO FUNCIONARÁ.
-Para iniciarla, volveremos a la terminal donde tenemos activado el entorno virtual e ingresaremos los siguientes comandos:
+Para iniciarla, volveremos a la terminal donde tenemos activado el entorno virtual e iniciamos la base de datos:
 ```bash
   flask db init
-  flask db migrate -m "creacion de tablas"
-  flask db upgrade
 ```
 ---
 
